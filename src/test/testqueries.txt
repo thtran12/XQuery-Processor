@@ -1,0 +1,520 @@
+QUERY 1
+
+for $b1 in .//book,
+$a1 in $b1/author, 
+$al1 in $a1/last/text(),
+$p1 in $b1//publisher/text(),
+$b2 in .//book,
+$p2 in $b2//publisher/text(),
+$a2 in $b2/author, 
+$al2 in $a2/last/text()
+ 
+where $al1 eq "Stevens" and $p2 eq $p1
+return <same> { $b1, $b2/publisher} </same>
+
+OUTPUT 1
+<?xml version="1.0" encoding="UTF-8"?>
+<same>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+
+QUERY 2
+
+for $bib in .//bib,
+$b1 in $bib/book,
+$b2 in $bib/book,
+$y2 in  $b2/@year,
+$y1 in  $b1/@year
+ 
+where $y1 eq $y2
+return <same> { $b1, $b2} </same>
+
+OUTPUT
+Shouldn't need rewriting
+
+QUERY 3
+
+for $b1 in .//book,
+$b2 in .//book,
+$af1 in $b1/author//first,
+$p1 in $b1/publisher,
+$pr2 in $b2/price,
+$pr1 in $b1/price,
+$p2 in $b2/publisher,
+$b3 in .//book,
+$af3 in $b3/author//first,
+$al3 in $b3//last,
+$y3 in  $b3/@year,
+$y2 in  $b2/@year
+ 
+where $y2 eq $y3 and $al3 eq "Stevens" and $af1 eq $af3 and $p2 eq $p1
+return <same> { $b1, $b2, $b3/publisher} </same>
+
+OUTPUT
+
+<?xml version="1.0" encoding="UTF-8"?>
+<same>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+
+QUERY 4
+
+for $b1 in .//book,
+$b2 in .//book,
+$af1 in $b1/author//first,
+$p1 in $b1/publisher,
+$pr2 in $b2/price,
+$pr1 in $b1/price,
+$p2 in $b2/publisher,
+$b3 in .//book,
+$pr3 in $b3/price,
+$af3 in $b3/author//first,
+$al3 in $b3//last/text()
+ 
+where $pr2 eq $pr3 and $al3 eq "Stevens" and $af1 eq $af3 and $p2 eq $p1 and $pr1 eq $pr2
+return <same> { $b1, $b2, $b3/publisher} </same>
+
+<same>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1994">
+      <title>TCP/IP Illustrated</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+<same>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <book year="1992">
+      <title>Advanced Programming in the Unix environment</title>
+      <author>
+         <last>Stevens</last>
+         <first>W.</first>
+      </author>
+      <publisher>Addison-Wesley</publisher>
+      <price>65.95</price>
+   </book>
+   <publisher>Addison-Wesley</publisher>
+</same>
+
+QUERY 5
+
+for $a2 in .//ACT,
+$p1 in .//PERSONAE,
+$per1 in $p1//PERSONA,
+$pt1 in $per1/text(),
+$t2 in $a2/TITLE/text(),
+$sp2 in $a2//SPEAKER/text()
+where $pt1 eq $sp2 and $t2 eq "ACT I"
+return <same> {$per1} </same>
+
+OUTPUT
+
+<same>
+   <PERSONA>FLAVIUS</PERSONA>
+</same>
+<same>
+   <PERSONA>MARULLUS</PERSONA>
+</same>
+<same>
+   <PERSONA>MARULLUS</PERSONA>
+</same>
+
+QUERY 6
+
+for $a2 in .//ACT,
+$p1 in .//PERSONAE,
+$per1 in $p1//PERSONA,
+$pt1 in $per1/text(),
+$t2 in $a2/TITLE/text(),
+$pg3 in .//PGROUP,
+$sp2 in $a2//SPEAKER/text(),
+$per32 in $pg3/PERSONA/text(),
+$per31 in $pg3//PERSONA/text()
+
+where $per32 eq "FLAVIUS" and $pt1 eq $sp2 and $t2 eq "ACT I" and $per31 eq $pt1 
+return <same> {$per1} </same>
+
+OUTPUT
+
+same as 5
+
+QUERY 7
+
+for $a2 in .//ACT,
+$p1 in .//PERSONAE,
+$per1 in $p1//PERSONA,
+$pt1 in $per1/text(),
+$t2 in $a2/TITLE/text(),
+$pg3 in .//PGROUP,
+$sp2 in $a2//SPEAKER/text(),
+$per32 in $pg3/PERSONA/text(),
+$per31 in $pg3//PERSONA/text()
+
+where $per32 eq "FLAVIUS" and $pt1 eq $sp2 and $t2 eq "ACT I" and $per31 eq $pt1 and $sp2 eq $per31 
+return <same> {$per1, $pg3} </same>
+
+OUTPUT 
+
+<same>
+   <PERSONA>FLAVIUS</PERSONA>
+   <PGROUP>
+      <PERSONA>FLAVIUS</PERSONA>
+      <PERSONA>MARULLUS</PERSONA>
+      <GRPDESCR>tribunes.</GRPDESCR>
+   </PGROUP>
+</same>
+<same>
+   <PERSONA>MARULLUS</PERSONA>
+   <PGROUP>
+      <PERSONA>FLAVIUS</PERSONA>
+      <PERSONA>MARULLUS</PERSONA>
+      <GRPDESCR>tribunes.</GRPDESCR>
+   </PGROUP>
+</same>
+<same>
+   <PERSONA>MARULLUS</PERSONA>
+   <PGROUP>
+      <PERSONA>FLAVIUS</PERSONA>
+      <PERSONA>MARULLUS</PERSONA>
+      <GRPDESCR>tribunes.</GRPDESCR>
+   </PGROUP>
+</same
+
+QUERY 8
+
+for $a2 in .//ACT,
+$p1 in .//PERSONAE,
+$per1 in $p1//PERSONA,
+$pt1 in $per1/text(),
+$t2 in $a2/TITLE/text(),
+$pg3 in .//PGROUP,
+$pg4 in .//PGROUP,
+$spe2 in $a2//SPEECH,
+$sp2 in $spe2/SPEAKER/text(),
+$per4 in $pg4/PERSONA/text(),
+$per3 in $pg3//PERSONA/text()
+
+where $per3 eq "FLAVIUS" and $pt1 eq $sp2 and $t2 eq "ACT I" and $pg3 eq $pg4 and $per4 eq $pt1
+return <same> {$per1, $pg3, $spe2} </same>
+
+OUTPUT
+<same>
+   <PERSONA>FLAVIUS</PERSONA>
+   <PGROUP>
+      <PERSONA>FLAVIUS</PERSONA>
+      <PERSONA>MARULLUS</PERSONA>
+      <GRPDESCR>tribunes.</GRPDESCR>
+   </PGROUP>
+   <SPEECH>
+      <SPEAKER>FLAVIUS</SPEAKER>
+      <LINE>Hence! home, you idle creatures get you home:</LINE>
+      <LINE>Is this a holiday? what! know you not,</LINE>
+      <LINE>Being mechanical, you ought not walk</LINE>
+      <LINE>Upon a labouring day without the sign</LINE>
+      <LINE>Of your profession? Speak, what trade art thou?</LINE>
+   </SPEECH>
+</same>
+
+<same>
+   <PERSONA>MARULLUS</PERSONA>
+   <PGROUP>
+      <PERSONA>FLAVIUS</PERSONA>
+      <PERSONA>MARULLUS</PERSONA>
+      <GRPDESCR>tribunes.</GRPDESCR>
+   </PGROUP>
+   <SPEECH>
+      <SPEAKER>MARULLUS</SPEAKER>
+      <LINE>Where is thy leather apron and thy rule?</LINE>
+      <LINE>What dost thou with thy best apparel on?</LINE>
+      <LINE>You, sir, what trade are you?</LINE>
+   </SPEECH>
+</same>
+<same>
+   <PERSONA>MARULLUS</PERSONA>
+   <PGROUP>
+      <PERSONA>FLAVIUS</PERSONA>
+      <PERSONA>MARULLUS</PERSONA>
+      <GRPDESCR>tribunes.</GRPDESCR>
+   </PGROUP>
+   <SPEECH>
+      <SPEAKER>MARULLUS</SPEAKER>
+      <LINE>But what trade art thou? answer me directly.</LINE>
+   </SPEECH>
+</same>
+
+
+
+
